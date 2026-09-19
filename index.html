@@ -45,31 +45,6 @@
     background-size: 400% 400%;
     animation: bg-flow 20s ease-in-out infinite;
   }
-  @media (max-width: 768px) {
-    /* на мобильных вместо ленты — лёгкий "хаотичный" переход по палитре,
-       основной цвет остаётся fbfaf8, а цвета вклиниваются не по порядку */
-    .bg-gradient {
-      background-image: linear-gradient(120deg,
-        var(--bg) 0%,
-        var(--blue2) 10%,
-        var(--bg) 20%,
-        var(--pink) 30%,
-        var(--bg) 40%,
-        var(--lav) 50%,
-        var(--bg) 60%,
-        var(--peach) 70%,
-        var(--bg) 80%,
-        var(--blue) 90%,
-        var(--bg) 100%);
-      background-size: 400% 400%;
-      animation: bg-flow-mobile 18s ease-in-out infinite;
-    }
-  }
-  @keyframes bg-flow-mobile {
-    0%   { background-position: 40% 35%; }
-    50%  { background-position: 60% 65%; }
-    100% { background-position: 40% 35%; }
-  }
   @keyframes bg-flow {
     0%   { background-position: 0% 0%; }
     50%  { background-position: 100% 100%; }
@@ -94,13 +69,20 @@
     overflow: hidden;
     padding: 28px 6vw 0;
   }
+
+  /* ---------- мобильная версия: без волны, обычный однотонный фон ---------- */
   @media (max-width: 768px) {
     .hero {
       min-height: 100vh;
       min-height: 100dvh;
+      background: var(--bg);
+    }
+    .bg-stack,
+    .ribbon-wrap {
+      display: none;
     }
   }
- 
+
   /* ---------- волнообразная текстура без чётких границ ---------- */
   .texture-wave {
     position: absolute;
@@ -172,15 +154,6 @@
     transform: translate(-25%, 35%) rotate(-24deg) scaleY(1.25);
     transform-origin: 80% 20%;
   }
-  @media (max-width: 768px) {
-    /* на мобильных волну просто не показываем — так надёжнее, чем подгонять
-       один и тот же сложный SVG-контур под совсем другие пропорции экрана */
-    .ribbon-wrap {
-      display: none;
-    }
-  }
-  /* заплатка для угла была нужна только чтобы "дошивать" волну на мобильных —
-     раз волны на мобильных больше нет, заплатка тоже не нужна */
   .ribbon-corner-fill { display: none; }
   .ribbon-svg {
     display: block;
@@ -214,13 +187,6 @@
     filter: blur(28px);
     transform: translate(1.5%, 2.5%);
     pointer-events: none;
-  }
-  @media (max-width: 768px) {
-    .ribbon-path { filter: blur(15px); }
-    .ribbon-path.under { filter: blur(22px); }
-    .ribbon-path.front { filter: blur(14px); }
-    .ribbon-path.edge-shade { filter: blur(10px); }
-    .ribbon-path.drop-shadow { filter: blur(38px); }
   }
   @keyframes drift-diag {
     0%   { transform: translate(0,0) rotate(-24deg); }
@@ -389,3 +355,4 @@
  
 </body>
 </html>
+ 
