@@ -20,6 +20,314 @@
     color: #1c2430;
     overflow-x: hidden;
   }
+ 
+  /* ---------- фон страницы: медленно перетекающий по палитре градиент ---------- */
+  body { background: var(--bg); }
+ 
+  /* обёртка всех фоновых слоёв — 3% прозрачности на весь фон целиком */
+  .bg-stack {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: .97;
+    pointer-events: none;
+  }
+  .bg-gradient {
+    position: absolute;
+    inset: 0;
+    /* фон теперь светлый и почти однотонный — цвет несёт лента-волна */
+    background-image: linear-gradient(120deg,
+      var(--bg) 0%,
+      #fdfbfa 30%,
+      var(--bg) 55%,
+      #fcfbfa 80%,
+      var(--bg) 100%);
+    background-size: 400% 400%;
+    animation: bg-flow 20s ease-in-out infinite;
+  }
+  @keyframes bg-flow {
+    0%   { background-position: 0% 0%; }
+    50%  { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
+  }
+ 
+  /* ---------- общий рецепт "бегущего" градиента по палитре ---------- */
+  .flow {
+    background-size: 300% 300%;
+    animation: flow 10s ease-in-out infinite;
+  }
+  @keyframes flow {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+ 
+  /* ============ HERO ============ */
+  .hero {
+    position: relative;
+    min-height: 92vh;
+    overflow: hidden;
+    padding: 28px 6vw 0;
+  }
+  @media (max-width: 768px) {
+    .hero {
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+  }
+ 
+  /* ---------- волнообразная текстура без чётких границ ---------- */
+  .texture-wave {
+    position: absolute;
+    inset: -25%;
+    width: 150%;
+    height: 150%;
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(70px);
+    mix-blend-mode: multiply;
+    opacity: .14;
+    background-image:
+      radial-gradient(38% 30% at 22% 28%, var(--blue2), transparent 70%),
+      radial-gradient(34% 26% at 72% 20%, var(--pink), transparent 70%),
+      radial-gradient(40% 32% at 55% 62%, var(--lav), transparent 70%),
+      radial-gradient(30% 24% at 15% 75%, var(--peach), transparent 70%),
+      radial-gradient(36% 28% at 85% 70%, var(--blue), transparent 70%);
+    background-repeat: no-repeat;
+    animation: texture-drift 24s ease-in-out infinite;
+  }
+  @keyframes texture-drift {
+    0%   { transform: translate(0, 0) scale(1) rotate(0deg); }
+    33%  { transform: translate(-3%, 2.5%) scale(1.04) rotate(2deg); }
+    66%  { transform: translate(2.5%, -2%) scale(1.02) rotate(-1.5deg); }
+    100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .texture-wave, .texture-wave feTurbulence { animation: none !important; }
+  }
+  .nav {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: #5b6472;
+  }
+  .logo { font-weight: 700; letter-spacing: .12em; color: #1c2430; }
+  .nav-links { display: flex; gap: 26px; }
+  .cta-pill {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 9px 20px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    color: #fff;
+    background: linear-gradient(120deg, var(--blue2), var(--pink));
+  }
+ 
+  .hero-copy { position: relative; z-index: 3; max-width: 480px; margin-top: 9vh; }
+  .hero-copy h1 { font-size: 40px; line-height: 1.15; margin: 0 0 14px; }
+  .grad-text {
+    background: linear-gradient(90deg, var(--blue2), var(--lav), var(--pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-copy p { color: #6b7482; font-size: 14.5px; max-width: 340px; }
+ 
+  /* --- диагональная волна: настоящий SVG-контур (плавная кривая, не ломаная),
+     но обёртка держит те же пропорции, что и viewBox (aspect-ratio) — поэтому
+     SVG никогда не "режется"/не растягивается под чужой формат экрана, а просто
+     целиком уменьшается или увеличивается. Это и убирает разницу мобильный/десктоп. --- */
+  .wave-wrap {
+    position: absolute;
+    width: 140vw;
+    aspect-ratio: 1000 / 300;
+    left: -10vw;
+    bottom: -10vh;
+    z-index: 1;
+    pointer-events: none;
+    transform: rotate(-24deg);
+    transform-origin: 10% 100%;
+    animation: wave-sway 10s ease-in-out infinite;
+  }
+  .wave-wrap.wave-wrap--soft {
+    opacity: .5;
+    bottom: -14vh;
+    animation-duration: 13s;
+    animation-direction: reverse;
+  }
+  @media (max-width: 768px) {
+    .wave-wrap {
+      width: 260vw;
+      left: -40vw;
+      bottom: -3vh;
+    }
+    .wave-wrap.wave-wrap--soft {
+      bottom: -5vh;
+    }
+  }
+  .wave-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  @keyframes wave-sway {
+    0%, 100% { transform: rotate(-24deg); }
+    50%      { transform: rotate(-21deg); }
+  }
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(38px);
+    opacity: .6;
+    z-index: 1;
+    animation: bob 9s ease-in-out infinite;
+  }
+  .blob.blue {
+    width: 46vw; height: 46vw; left: -18vw; bottom: -22vw;
+    background: linear-gradient(120deg, var(--blue), #eaf6fb, var(--lav));
+    animation-name: bob, flow;
+    animation-duration: 9s, 12s;
+  }
+  .blob.pink {
+    width: 40vw; height: 40vw; right: -14vw; top: -8vw;
+    background: linear-gradient(120deg, var(--pink), var(--peach));
+    animation-name: bob2, flow;
+    animation-duration: 11s, 13s;
+  }
+  @keyframes bob  { 0%,100% { transform: translate(0,0) scale(1);} 50% { transform: translate(2%, -3%) scale(1.05);} }
+  @keyframes bob2 { 0%,100% { transform: translate(0,0) scale(1);} 50% { transform: translate(-2.5%, 2.5%) scale(.97);} }
+ 
+ 
+ 
+ 
+  linearGradient stop.a { animation: stopA 8s ease-in-out infinite; }
+  linearGradient stop.b { animation: stopB 8s ease-in-out infinite; }
+  @keyframes stopA { 0%,100% { stop-color: var(--blue2);} 50% { stop-color: var(--lav);} }
+  @keyframes stopB { 0%,100% { stop-color: var(--pink);}  50% { stop-color: var(--peach);} }
+ 
+  /* ============ СКВОЗНАЯ ДИАГОНАЛЬНАЯ ВОЛНА ПО ВСЕМУ САЙТУ ============ */
+  .sweep-rotator {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 5;
+    mix-blend-mode: soft-light;
+  }
+  .sweep-band {
+    position: absolute;
+    top: -60%; left: -60%;
+    width: 220%; height: 220%;
+    transform: rotate(-24deg);
+    background-image: linear-gradient(90deg,
+      transparent 0%,
+      var(--blue2) 44%,
+      var(--lav) 50%,
+      var(--pink) 56%,
+      transparent 100%);
+    background-size: 45% 100%;
+    background-repeat: no-repeat;
+    animation: sweep-move 8s linear infinite;
+  }
+  @keyframes sweep-move {
+    0%   { background-position: -70% 0; }
+    100% { background-position: 170% 0; }
+  }
+ 
+  @media (prefers-reduced-motion: reduce) {
+    body, .ribbon, .texture-wave, .blob, .footer svg.line path, linearGradient stop, .sweep-band { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+ 
+<section class="hero">
+ 
+  <div class="bg-stack">
+    <div class="bg-gradient"></div>
+    <div class="texture-wave"></div>
+ 
+  <div class="wave-wrap wave-wrap--soft">
+    <svg class="wave-svg" viewBox="0 0 1000 300" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="waveGradSoft" x1="0" y1="0" x2="1" y2="0" spreadMethod="repeat">
+          <stop offset="0%"  style="stop-color:var(--blue2)"/>
+          <stop offset="25%" style="stop-color:#fcc6f8"/>
+          <stop offset="50%" style="stop-color:var(--pink)"/>
+          <stop offset="75%" style="stop-color:#fcc6f8"/>
+          <stop offset="100%" style="stop-color:var(--blue2)"/>
+          <animate attributeName="x1" values="0;1" dur="11s" repeatCount="indefinite"/>
+          <animate attributeName="x2" values="1;2" dur="11s" repeatCount="indefinite"/>
+        </linearGradient>
+        <filter id="fWaveSoft" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="10"/>
+        </filter>
+      </defs>
+      <path class="wave-fill" fill="url(#waveGradSoft)" filter="url(#fWaveSoft)"
+        d="M0,190 C130,150 230,220 350,185 C470,150 570,215 690,180 C810,145 890,190 1000,165 L1000,300 L0,300 Z"/>
+    </svg>
+  </div>
+  <div class="wave-wrap">
+    <svg class="wave-svg" viewBox="0 0 1000 300" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="waveGradMain" x1="0" y1="0" x2="1" y2="0" spreadMethod="repeat">
+          <stop offset="0%"  style="stop-color:var(--blue2)"/>
+          <stop offset="25%" style="stop-color:var(--blue)"/>
+          <stop offset="50%" style="stop-color:#fcc6f8"/>
+          <stop offset="75%" style="stop-color:var(--pink)"/>
+          <stop offset="100%" style="stop-color:var(--blue2)"/>
+          <animate attributeName="x1" values="0;-1" dur="8s" repeatCount="indefinite"/>
+          <animate attributeName="x2" values="1;0" dur="8s" repeatCount="indefinite"/>
+        </linearGradient>
+        <filter id="fWaveMain" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="6"/>
+        </filter>
+      </defs>
+      <path class="wave-fill" fill="url(#waveGradMain)" filter="url(#fWaveMain)" stroke="rgba(255,255,255,.65)" stroke-width="2"
+        d="M0,160 C120,110 220,190 340,150 C460,110 560,180 680,140 C800,100 880,150 1000,120 L1000,300 L0,300 Z"/>
+    </svg>
+  </div>
+  </div>
+ 
+  <div class="nav">
+    <div class="logo">NEXORA</div>
+    <div class="nav-links"><span>Услуги</span><span>Проекты</span><span>Тарифы</span></div>
+    <div class="cta-pill">Обсудить проект</div>
+  </div>
+ 
+  <div class="hero-copy">
+    <h1>Ваш бизнес<br>в <span class="grad-text">цифровом пространстве</span></h1>
+    <p>Создаём сайты, бренды и digital&#8209;решения, которые приносят результат.</p>
+  </div>
+</section>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nexora — animated waves</title>
+<style>
+  :root{
+    --pink:   #ffb3c2;
+    --peach:  #f8c9a3;
+    --lav:    #cdb8ec;
+    --blue:   #93d3ec;
+    --blue2:  #75d0ed;
+    --bg:     #fbfaf8;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    color: #1c2430;
+    overflow-x: hidden;
+  }
 
   /* ---------- фон страницы: медленно перетекающий по палитре градиент ---------- */
   body { background: var(--bg); }
